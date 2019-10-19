@@ -3,8 +3,7 @@ class ItemsController < ApplicationController
 
   # GET /items
   def index
-    puts item_params
-    @items = Item.where(game_id: Game.find_by(code: item_params[:game_id])[:id])
+    @items = Item.where(game_id: Game.find_by(code: params[:game_id])[:id])
 
     render json: @items
   end
