@@ -15,7 +15,7 @@ class GamesController < ApplicationController
 
   # POST /games
   def create
-    @game = Game.new(game_params)
+    @game = Game.new(code: SecureRandom.hex(3))
 
     if @game.save
       render json: @game, status: :created, location: @game

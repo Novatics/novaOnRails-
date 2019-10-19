@@ -3,7 +3,8 @@ class ItemsController < ApplicationController
 
   # GET /items
   def index
-    @items = Item.all
+    puts item_params
+    @items = Item.where(game_id: Game.find_by(code: item_params[:game_id])[:id])
 
     render json: @items
   end
@@ -15,12 +16,16 @@ class ItemsController < ApplicationController
 
   # POST /items
   def create
-    @item = Item.new(item_params)
-
-    if @item.save
-      render json: @item, status: :created, location: @item
+    @has_game = Game.find_by(code: item_params[:game_id]) ? true : false
+    if @has_game
+      @item = Item.new(code: item_params[:code], game_id: Game.find_by(code: item_params[:game_id])[:id])
+      if @item.save
+        render json: @item, status: :created, location: @item
+      else
+        render json: @item.errors, status: :unprocessable_entity
+      end
     else
-      render json: @item.errors, status: :unprocessable_entity
+      render json: {status: "error", code: 400, message: "Não existe jogo com esse código" } 
     end
   end
 

@@ -1,4 +1,4 @@
 class Game < ApplicationRecord
     has_many :player
-    belongs_to :item
+    has_many :item
 end

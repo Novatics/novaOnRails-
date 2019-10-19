@@ -15,12 +15,16 @@ class PlayersController < ApplicationController
 
   # POST /players
   def create
-    @player = Player.new(player_params)
-
-    if @player.save
-      render json: @player, status: :created, location: @player
-    else
-      render json: @player.errors, status: :unprocessable_entity
+    @has_game = Game.find_by(code: player_params[:game_id]) ? true : false
+    if @has_game
+      @player = Player.new(nickname: player_params[:nickname], game_id: Game.find_by(code: player_params[:game_id])[:id])
+      if @player.save
+        render json: @player, status: :created, location: @player
+      else
+        render json: @player.errors, status: :unprocessable_entity
+      end
+    else 
+      render json: {status: "error", code: 400, message: "Não existe jogo com esse código" } 
     end
   end
 
