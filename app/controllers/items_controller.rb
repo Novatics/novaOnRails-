@@ -3,7 +3,8 @@ class ItemsController < ApplicationController
 
   # GET /items
   def index
-    @items = Item.where(game_id: Game.find_by(code: params[:game_id])[:id])
+    @game_id = Game.find_by(code: params[:game_id])[:id]
+    @items = Item.where(game_id: @game_id)
 
     render json: @items
   end
@@ -20,6 +21,7 @@ class ItemsController < ApplicationController
       @array_of_items = item_params[:code]
       @array_of_items.each { |item|
         @item = Item.new(code: item, game_id: Game.find_by(code: item_params[:game_id])[:id])
+        @item.save
       }
       render status: :created, location: @item
     else
