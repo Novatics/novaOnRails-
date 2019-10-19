@@ -18,12 +18,11 @@ class ItemsController < ApplicationController
   def create
     @has_game = Game.find_by(code: item_params[:game_id]) ? true : false
     if @has_game
-      @item = Item.new(code: item_params[:code], game_id: Game.find_by(code: item_params[:game_id])[:id])
-      if @item.save
-        render json: @item, status: :created, location: @item
-      else
-        render json: @item.errors, status: :unprocessable_entity
-      end
+      @array_of_items = item_params[:code]
+      @array_of_items.each { |item|
+        @item = Item.new(code: item, game_id: Game.find_by(code: item_params[:game_id])[:id])
+      }
+      render status: :created, location: @item
     else
       render json: {status: "error", code: 400, message: "Não existe jogo com esse código" } 
     end
@@ -51,6 +50,6 @@ class ItemsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def item_params
-      params.require(:item).permit(:code, :game_id)
+      params.require(:item).permit({:code => []}, :game_id)
     end
 end
