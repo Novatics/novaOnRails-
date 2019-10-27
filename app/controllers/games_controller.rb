@@ -15,7 +15,7 @@ class GamesController < ApplicationController
 
   # POST /games
   def create
-    @game = Game.new(code: SecureRandom.hex(3))
+    @game = Game.new(code: SecureRandom.hex(3), satellites: params[:satellites])
 
     if @game.save
       render json: @game, status: :created, location: @game
@@ -46,6 +46,6 @@ class GamesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def game_params
-      params.require(:game).permit(:code)
+      params.require(:game).permit(:satellites)
     end
 end
