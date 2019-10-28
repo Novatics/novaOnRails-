@@ -29,7 +29,7 @@ class GamesController < ApplicationController
     @player = Player.new(nickname: params[:nickname], game_id: @game.id)
 
     if @player.save
-      render json: @game, status: :updatem, location: @game
+      render json: @player, status: :update, include: { game: { only: :satellites } }
     else
       render json: @player.errors, status: :unprocessable_entity
     end
