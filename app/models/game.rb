@@ -1,5 +1,5 @@
 class Game < ApplicationRecord
-    has_many :player
+    has_many :players
 
     validates :satellites, presence: true
 end
