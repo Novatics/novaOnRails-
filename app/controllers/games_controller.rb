@@ -15,12 +15,23 @@ class GamesController < ApplicationController
 
   # POST /games
   def create
-    @game = Game.new(code: SecureRandom.hex(3))
+    @game = Game.new(code: SecureRandom.hex(3), satellites: params[:satellites])
 
     if @game.save
       render json: @game, status: :created, location: @game
     else
       render json: @game.errors, status: :unprocessable_entity
+    end
+  end
+
+  def join
+    @game = Game.find_by(code: request.params[:code])
+    @player = Player.new(nickname: params[:nickname], game_id: @game.id)
+
+    if @player.save
+      render json: @game, status: :updatem, location: @game
+    else
+      render json: @player.errors, status: :unprocessable_entity
     end
   end
 
@@ -46,6 +57,6 @@ class GamesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def game_params
-      params.require(:game).permit(:code)
+      params.require(:game).permit(:satellites)
     end
 end
