@@ -24,6 +24,17 @@ class GamesController < ApplicationController
     end
   end
 
+  def join
+    @game = Game.find_by(code: request.params[:code])
+    @player = Player.new(nickname: params[:nickname], game_id: @game.id)
+
+    if @player.save
+      render json: @game, status: :updatem, location: @game
+    else
+      render json: @player.errors, status: :unprocessable_entity
+    end
+  end
+
   # PATCH/PUT /games/1
   def update
     if @game.update(game_params)
